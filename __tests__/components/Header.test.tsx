@@ -158,6 +158,20 @@ describe('Header component', () => {
     expect(activeLink).toBeDefined()
   })
 
+  // Regression guard: next.config.ts sets trailingSlash: true, so the
+  // deployed static export's usePathname() reports paths WITH a trailing
+  // slash (e.g. '/about/'), while menuItems are written without one. Caught
+  // by Copilot review on PR #16 — a mock that already matched exactly would
+  // never have exercised this.
+  it('should highlight the nav link when usePathname reports a trailing slash', () => {
+    mockUsePathname.mockReturnValue('/about/')
+    render(<Header />)
+
+    const aboutLinks = screen.getAllByText('About')
+    const activeLink = aboutLinks.find((link) => link.className.includes('text-blue-600'))
+    expect(activeLink).toBeDefined()
+  })
+
   it('should set Home as active on the root route', () => {
     mockUsePathname.mockReturnValue('/')
     render(<Header />)

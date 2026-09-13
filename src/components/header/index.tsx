@@ -49,7 +49,16 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(false)
   }
 
-  const isActive = (path: string) => pathname === path
+  // next.config.ts sets `trailingSlash: true`, so the deployed static export
+  // serves (and usePathname() reports) paths like `/about/`, while the nav
+  // items above are written without a trailing slash. Strip a single
+  // trailing slash from both sides before comparing (but never strip the
+  // root path itself) so the active link still highlights post-deploy —
+  // caught by Copilot review on PR #16, not by the Jest unit tests, since
+  // those mock usePathname() with values that already match exactly.
+  const normalizePathname = (value: string) =>
+    value.length > 1 ? value.replace(/\/+$/, '') : value
+  const isActive = (path: string) => normalizePathname(pathname) === normalizePathname(path)
 
   return (
     <header
