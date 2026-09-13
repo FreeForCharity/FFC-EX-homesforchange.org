@@ -1,12 +1,19 @@
 import type { Metadata } from 'next'
-import { siteUrl } from '@/lib/site.config'
+import { siteConfig, siteUrl } from '@/lib/site.config'
 
 export const metadata: Metadata = {
-  title: 'Donation Policy | Free For Charity',
-  description: 'Donation Policy for Free For Charity website',
+  title: `Donation Policy | ${siteConfig.name}`,
+  description: `Donation Policy for ${siteConfig.name}`,
   // Own canonical: without it Next inherits the layout's, which points at the home page.
   alternates: { canonical: siteUrl('/donation-policy') },
 }
+
+// This site's live source describes Homes for Change as a 501(c)(3)
+// nonprofit, but Free For Charity has not independently verified a
+// tax-exempt determination for this organization in its own records — see
+// src/lib/site.config.ts (siteConfig.ein). This policy page states that
+// plainly rather than repeating an unverified determination as fact.
+const PAYPAL_DONATE_URL = 'https://www.paypal.com/donate/?hosted_button_id=EDGPK4WY95N5E'
 
 export default function DonationPolicy() {
   return (
@@ -18,53 +25,71 @@ export default function DonationPolicy() {
 
         <div className="prose max-w-none font-[var(--font-lato)] text-[18px] leading-[28px]">
           <p>
-            <strong>Effective Date:</strong> January 1, 2024
+            <strong>Effective Date:</strong> September 13, 2026
           </p>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Tax Deductibility
           </h2>
           <p>
-            Free For Charity is a qualified 501(c)(3) nonprofit organization (EIN: 46-2471893).
-            Donations are tax-deductible to the full extent allowed by law.
+            {siteConfig.name} describes itself as a 501(c)(3) nonprofit organization. Free For
+            Charity has not independently verified a tax-exempt determination for this organization
+            in its own records, so this page does not confirm tax-deductibility on {siteConfig.name}
+            &apos;s behalf. Please consult your tax advisor, or contact {siteConfig.name} directly
+            at{' '}
+            <a href={`mailto:${siteConfig.contactEmail}`} className="text-primary hover:underline">
+              {siteConfig.contactEmail}
+            </a>
+            , regarding the deductibility of any donation.
           </p>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Use of Donations
           </h2>
           <p>
-            Donations support our mission to reduce costs and increase revenues for nonprofits by
-            providing:
+            Donations support {siteConfig.name}&apos;s mission of providing transitional and
+            long-term housing, counseling, and job-skills training that help unhoused and distressed
+            families become self-sustaining, including the organization&apos;s efforts to build a
+            permanent funding endowment for its housing programs.
           </p>
-          <ul>
-            <li>Free domain registration and hosting services</li>
-            <li>Technology consultation and support</li>
-            <li>Volunteer coordination and training</li>
-            <li>Administrative costs necessary to operate our programs</li>
-          </ul>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Donation Processing
           </h2>
           <p>
-            Donations are processed securely through our payment partners. You will receive a
-            receipt for tax purposes via email after your donation is processed.
+            {siteConfig.name} accepts donations through PayPal. Visit the{' '}
+            <a href="/donate" className="text-primary hover:underline">
+              Donate
+            </a>{' '}
+            page, or give directly via{' '}
+            <a
+              href={PAYPAL_DONATE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              PayPal
+            </a>
+            . PayPal processes payment details directly; {siteConfig.name} and Free For Charity do
+            not collect or store your payment information. PayPal issues its own transaction receipt
+            at the time of donation.
           </p>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Refund Policy
           </h2>
           <p>
-            We generally do not provide refunds for donations. However, if you believe an error has
-            occurred, please contact us within 30 days of your donation.
+            We generally do not provide refunds for donations. If you believe an error has occurred,
+            please contact us within 30 days of your donation.
           </p>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Privacy
           </h2>
           <p>
-            Donor information is kept confidential and will not be shared with third parties except
-            as required by law.
+            Donor information submitted through PayPal is handled under PayPal&apos;s own privacy
+            policy. {siteConfig.name} keeps any donor information it receives confidential and does
+            not share it with third parties except as required by law.
           </p>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
@@ -73,14 +98,11 @@ export default function DonationPolicy() {
           <p>For questions about donations or this policy, please contact us at:</p>
           <p>
             Email:{' '}
-            <a
-              href="mailto:clarkemoyer@freeforcharity.org"
-              className="text-primary hover:underline"
-            >
-              clarkemoyer@freeforcharity.org
+            <a href={`mailto:${siteConfig.contactEmail}`} className="text-primary hover:underline">
+              {siteConfig.contactEmail}
             </a>
             <br />
-            Phone: (520) 222-8104
+            Phone: {siteConfig.phone.display}
           </p>
         </div>
       </div>

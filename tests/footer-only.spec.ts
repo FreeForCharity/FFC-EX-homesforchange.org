@@ -1,35 +1,30 @@
 import { test, expect } from '@playwright/test'
+import { testConfig } from './test.config'
 
 /**
- * Footer-Only Template Smoke Tests
+ * Homepage + Footer smoke tests for the homesforchange.org migration.
  *
- * This repo intentionally renders only:
- * - Team section
- * - Footer
+ * This fork's live WordPress source had a Divi/Elementor-built homepage with
+ * real charity content (mission, donate/volunteer CTAs, contact) — the
+ * template's sample-team block is not mounted, since no real team roster
+ * exists for this charity (see src/data/team.ts).
  */
 
-test.describe('Footer-only template', () => {
-  test('should render the Team section with 5 members', async ({ page }) => {
+test.describe('Homes for Change homepage', () => {
+  test('should render the real hero content, not template placeholder text', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: 'The Free For Charity Team' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Homes for Change' })).toBeVisible()
+    await expect(page.getByAltText(testConfig.logo.headerAlt).first()).toBeVisible()
+  })
 
-    // Cards render an initials monogram, not a photo — there are no team images.
-    const memberPhotos = page.locator('#team img')
-    await expect(memberPhotos).toHaveCount(0)
+  test('should link Donate Now to the donate page', async ({ page }) => {
+    await page.goto('/')
 
-    // Each member renders a name heading; when a safe LinkedIn URL is present the
-    // whole card links to it (new tab).
-    for (const member of [
-      'Clarke Moyer',
-      'Chris Rae',
-      'Tyler Carlotto',
-      'Brennan Darling',
-      'Rebecca Cook',
-    ]) {
-      await expect(page.getByRole('heading', { level: 3, name: member })).toBeVisible()
-      await expect(page.getByRole('link', { name: `${member} on LinkedIn` })).toBeVisible()
-    }
+    await expect(page.getByRole('link', { name: 'Donate Now' }).first()).toHaveAttribute(
+      'href',
+      /\/donate\/?$/
+    )
   })
 
   test('should render the Footer', async ({ page }) => {
@@ -38,5 +33,7 @@ test.describe('Footer-only template', () => {
     await expect(page.locator('footer')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Quick Links' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Contact Us' })).toBeVisible()
+    // Level 1 footer (no validated EIN yet): Endorsements is omitted.
+    await expect(page.getByRole('heading', { name: 'Endorsements' })).toHaveCount(0)
   })
 })

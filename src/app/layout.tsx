@@ -16,6 +16,7 @@ import {
 import { siteMetadata } from '@/lib/siteMetadata'
 import { assetPath } from '@/lib/assetPath'
 import { CONSENT_MODE_BOOTSTRAP } from '@/lib/consent-mode'
+import { gtmConfigured } from '@/lib/gtmConfig'
 
 export const metadata = siteMetadata
 
@@ -48,15 +49,21 @@ export default function RootLayout({
         <meta name="color-scheme" content="light" />
         <meta name="theme-color" content={siteConfig.themeColor} />
 
-        {/* Preconnect to external domains for faster resource loading */}
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        {/* Preconnect to external domains for faster resource loading. Skipped
+            entirely while no GTM container is configured — see gtmConfigured
+            in src/lib/gtmConfig.ts. */}
+        {gtmConfigured && (
+          <>
+            <link rel="preconnect" href="https://www.googletagmanager.com" />
+            <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+          </>
+        )}
 
-        {/* Preload critical LCP image */}
+        {/* Preload critical LCP image (the home page hero logo) */}
         <link
           rel="preload"
           as="image"
-          href={assetPath('/Images/figma-hero-img.webp')}
+          href={assetPath('/Images/homesforchange/logo.jpg')}
           fetchPriority="high"
         />
 

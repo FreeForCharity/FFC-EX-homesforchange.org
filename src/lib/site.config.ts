@@ -111,54 +111,63 @@ export type SiteConfig = {
 }
 
 export const siteConfig: SiteConfig = {
-  name: 'Free For Charity',
-  tagline: 'Reduce Costs, Increase Impact',
+  name: 'Homes for Change',
+  tagline: 'Building Homes, Restoring Lives',
   description:
-    'Free For Charity connects students, professionals, and businesses with nonprofits to reduce costs and increase revenues—putting more resources back into their missions.',
+    'Homes for Change is a nonprofit organization providing transitional and long-term housing, counseling, and job-skills training to help unhoused and distressed families become self-sustaining.',
   shortDescription:
-    'Connecting students, professionals, and businesses with nonprofits to reduce costs and increase revenues.',
-  url: 'https://ffcworkingsite1.org',
-  twitterHandle: '@freeforcharity',
-  contactEmail: 'clarkemoyer@freeforcharity.org',
+    'Transitional housing, counseling, and job-skills training that help unhoused families become self-sustaining.',
+  // GitHub Pages origin (bare, no path) — NOT the eventual homesforchange.org
+  // custom domain. There is no public/CNAME yet (this migration targets the
+  // default Pages URL only; cutover is a separate, later step), and
+  // deploy.yml sets NEXT_PUBLIC_BASE_PATH to /FFC-EX-homesforchange.org for
+  // exactly that case. sitePath()/siteUrl() append that basePath on top of
+  // whatever origin is configured here, so this MUST stay the GitHub Pages
+  // origin — pointing it at homesforchange.org would produce a real, live,
+  // non-resolving hybrid URL (https://homesforchange.org/FFC-EX-homesforchange.org/...)
+  // in the sitemap/robots/security.txt/canonical tags, since the custom
+  // domain does not also serve this repo's basePath (see
+  // FFC-EX-myservicehours.org's migration PR for the bug this avoids).
+  // Switch this to 'https://homesforchange.org' in the same PR that adds
+  // public/CNAME at cutover (when NEXT_PUBLIC_BASE_PATH also becomes empty).
+  url: 'https://freeforcharity.github.io',
+  // No X/Twitter account was found on the live source site — leave unset
+  // rather than guess.
+  twitterHandle: '',
+  // Real, published contact address from the live site's Contact page.
+  contactEmail: 'info@homesforchange.org',
   keywords: [
     'nonprofit',
+    'homeless',
+    'homelessness',
+    'transitional housing',
+    'affordable housing',
+    'housing assistance',
     'charity',
-    'volunteer',
     'donate',
-    'free hosting',
-    'domains',
-    'Microsoft 365',
   ],
   themeColor: '#ffffff',
   vulnerabilityDisclosurePath: '/vulnerability-disclosure-policy',
-  social: [
-    { label: 'Facebook', href: 'https://www.facebook.com/freeforcharity' },
-    { label: 'X (Twitter)', href: 'https://x.com/freeforcharity1' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/freeforcharity/' },
-    // Repo name uses underscores — the hyphenated variant 404s.
-    { label: 'GitHub', href: 'https://github.com/FreeForCharity/FFC-IN-Footer_Only_Template' },
-  ],
-  ein: '46-2471893',
-  phone: { display: '(520) 222-8104', tel: '5202228104' },
-  addresses: [
-    {
-      label: 'Main Address',
-      lines: ['4030 Wake Forrest Road', 'Suite 349 Raleigh North', 'Carolina 27609'],
-      mapUrl:
-        'https://www.google.com/maps/search/?api=1&query=4030+Wake+Forrest+Road+Suite+349+Raleigh+NC+27609',
-    },
-    {
-      label: 'PA Office Address',
-      lines: ['301 Science Park Road Suite', '119 State College PA 16803'],
-      mapUrl:
-        'https://www.google.com/maps/place/Free+For+Charity/@40.7768455,-77.8963305,17z/data=!3m1!4b1!4m6!3m5!1s0x89cea944b44a2e01:0x6fc2d6bf09e00a0f!8m2!3d40.7768415!4d-77.8937556!16s%2Fg%2F11vzvbl2d7?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D',
-    },
-  ],
-  guidestar: {
-    profileUrl: 'https://www.guidestar.org/profile/46-2471893',
-    directProfileUrl:
-      'https://www.guidestar.org/profile/shared/bbbe173a-87b9-4af9-a8a2-cae255a95742',
-  },
+  // No social media presence was found on the live source site.
+  social: [],
+  // No validated EIN/501(c)(3) determination exists in FFC's own records for
+  // this charity yet — never fabricate one. The live site's own copy
+  // describes itself as a 501(c)(3) (preserved verbatim on About/Home as the
+  // charity's own claim), but this field renders as Level 1 (footer-standard
+  // -adoption-checklist): the footer and donation policy omit the
+  // 501(c)(3) status line and the GuideStar/Candid endorsement block
+  // entirely rather than asserting a determination FFC has not verified.
+  // Flips to Level 2 automatically once a validated EIN/GuideStar profile
+  // is added.
+  ein: '',
+  // Real, published phone number from the live site's Contact page.
+  phone: { display: '(818) 634-2704', tel: '8186342704' },
+  // No physical address is published anywhere on the live site; showing Free
+  // For Charity's own office address here would misattribute it as Homes for
+  // Change's location, so this stays empty rather than the template default.
+  addresses: [],
+  // No GuideStar/Candid profile exists for this charity yet (see `ein` above).
+  guidestar: { profileUrl: '', directProfileUrl: '' },
   supportedBy: {
     name: 'Free For Charity',
     url: 'https://freeforcharity.org',

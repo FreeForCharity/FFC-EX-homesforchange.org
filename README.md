@@ -1,222 +1,119 @@
-# FFC Footer-Only Template
+# FFC-EX-homesforchange.org
 
-A focused Next.js template that gives nonprofit websites a professional footer, legal policy pages, cookie compliance, analytics tracking, and team display -- all the backend formality a charity site needs.
+Static GitHub Pages site for **Homes for Change** (homesforchange.org), migrated from a live
+self-hosted WordPress site as part of the Free For Charity WordPress-to-Pages migration (Wave 1,
+epic
+[FFC-Cloudflare-Automation#702](https://github.com/FreeForCharity/FFC-Cloudflare-Automation/issues/702)).
 
-## Why This Template Exists
+Built on the [FFC Footer-Only Template](https://github.com/FreeForCharity/FFC-IN-Footer_Only_Template)
+(Next.js App Router, static export) rather than a raw HTML capture — the captured WordPress
+content was converted into real `src/app` routes instead of being dropped into `public/`.
 
-Many nonprofits already have a website design but lack the legal, compliance, and infrastructure pieces that a professional web presence requires. This template provides exactly those pieces so charities can adopt them without building from scratch:
+## What this is
 
-- **Legal compliance** -- 7 policy pages (privacy, cookies, terms, donation, vulnerability disclosure, security acknowledgements)
-- **Cookie consent** -- GDPR-compliant banner with granular opt-in/opt-out controls
-- **Analytics infrastructure** -- Google Tag Manager integration with consent-aware data layer events
-- **Professional footer** -- Contact info, social media links, policy links, GuideStar badge, Google Maps, branding
-- **Team section** -- Showcase your team with data-driven member cards
-- **SEO infrastructure** -- Sitemap, robots.txt, Open Graph, Twitter Cards, structured metadata
-- **Static export** -- Deploys to GitHub Pages with zero server costs
+The live source is a Divi + Elementor WordPress site with a small, real content set:
 
-## Where This Template Fits in the FFC Journey
+- **Home** (`/`) — the site's actual mission copy and calls to action.
+- **About** (`/about`) — the full "Overview / Our Purpose / How We Do It / How We Enhance
+  Success / Mission / Vision" copy from the live About page.
+- **Donate** (`/donate`) — the live site's real, working donation destination: a PayPal Giving
+  link (`hosted_button_id=EDGPK4WY95N5E`), not the GiveWP plugin's own form (GiveWP is installed
+  but this button is what is actually wired up on the live site).
+- **Volunteer** (`/volunteer`) — the live page's real copy, with the Forminator contact form
+  replaced by a pre-filled `mailto:` link (no backend exists for it once static).
+- **Contact** (`/contact`) — the live page's real crisis-line notice and response-time
+  disclosure, with the Forminator contact form replaced by a `mailto:` link.
+- **Image Gallery** (`/image-gallery`) — the three real stock photos the live site curated for
+  this page.
+- **Blog** (`/blog`) — the site's one real published post, rendered inline (there is only one).
+- The FFC policy-page suite (privacy, cookies, terms, donation policy, vulnerability disclosure,
+  security acknowledgements), each pointing at this site's own identity via
+  `src/lib/site.config.ts`.
 
-This template is for charities that **already have a designed website** and need the validation and formality of the FFC standard added to it. In the gated [FFC charity onboarding journey](https://freeforcharity.org/charity-onboarding-journey/), every site -- whether built from scratch or already designed -- must be validated live on its **free GitHub Pages address** (no custom domain); after validation, FFC registers a new free .org domain -- or transfers the domain the charity already owns -- into Cloudflare and points it at the validated site, which in turn unlocks email setup.
+### Scope decision: plugin scaffolding and unedited demo content were dropped, not faked
 
-Adopting this footer and compliance layer (footer, 7 policy pages, GDPR cookie consent, GTM analytics, team section, SEO) is what makes an already-designed site pass that FFC validation gate.
+The live REST/sitemap inventory (union: 30 URLs) included a WP Event Manager-style events plugin
+installed on the site, whose pages are entirely non-functional once static — empty listings
+("There are no venues.", "There are no organizers."), sign-in gates ("You need to be signed in to
+manage your venue listings."), and three demo/placeholder events (`Demo Event 1`, `New event`, and
+a stale 2022 `Dogepalooza` festival listing). These were **dropped, with their nav/footer links
+removed**:
 
-- **Already have a designed website?** Start here -- this template layers the FFC standard onto your existing design.
-- **No website yet?** Use the sibling [FFC Single Page Template](https://github.com/FreeForCharity/FFC-IN-FFC_Single_Page_Template) instead, where an FFC volunteer builds a complete single-page site from your content.
+`/events/`, `/event/*` (3 demo events), `/event-venues/`, `/event-organizers/`,
+`/venue-dashboard/`, `/organizer-dashboard/`, `/submit-venue-form/`, `/submit-organizer-form/`,
+`/event-type/*`, `/event_listing_category/*`.
 
-Both paths converge on the same validation gate that unlocks the domain step.
+Three more pages carried a similar GiveWP donation-plugin gate rather than real content
+(`/donor-dashboard/` and `/donation-confirmation/` render empty widget areas; `/donation-failed/`
+is a system message page) and were dropped for the same reason.
 
-## Quick Start
+Two pages were unedited WordPress/theme placeholder content rather than the charity's own copy:
+the default WordPress "Sample Page" ("This is an example page..."), and the FAQ page (every
+question read "Demo question goes here" with matching Divi placeholder body text). The Sponsors
+page was also dropped — its only images were generic Divi/pngtree stock logos (a wolf
+illustration, a "creative company" placeholder mark) with no actual sponsor names, so there was no
+real sponsor list to migrate.
 
-```bash
-git clone https://github.com/FreeForCharity/FFC-IN-Footer_Only_Template.git
-cd FFC-IN-Footer_Only_Template
-pnpm install
-pnpm run dev
-```
+Full source-inspection notes and this scope decision are recorded on the tracking issue,
+[FFC-EX-homesforchange.org#14](https://github.com/FreeForCharity/FFC-EX-homesforchange.org/issues/14).
 
-Visit [http://localhost:3000](http://localhost:3000)
+### Footer standard: Level 1
 
-## What's Included
+The live site's own copy describes Homes for Change as a "501(c)3 nonprofit organization," but no
+validated EIN or 501(c)(3) determination exists in Free For Charity's own records for this
+charity, and none is fabricated here. The footer ships at **Level 1**
+(footer-standard-adoption-checklist): the GuideStar/Candid endorsement block and the "US
+501(c)(3) Non Profit" status line are omitted entirely — see `siteConfig.ein` /
+`siteConfig.guidestar` in `src/lib/site.config.ts`, and the conditional rendering in
+`src/components/footer/index.tsx`. This flips to Level 2 automatically once a validated EIN is
+added. The Donation Policy page states this plainly rather than repeating the live site's
+unverified determination as fact. The footer's contact email/phone are the charity's own, real,
+published contact details (`info@homesforchange.org`, `(818) 634-2704`); no physical address or
+social-media links are shown, since none exist anywhere on the live site.
 
-### Components
+### Fully localized assets
 
-| Component              | Purpose                                                              |
-| ---------------------- | -------------------------------------------------------------------- |
-| **Footer**             | Contact info, social media, policy links, GuideStar badge, copyright |
-| **Header**             | Responsive navigation with mobile menu and search                    |
-| **Cookie Consent**     | GDPR-compliant banner with Accept All / Decline All / Customize      |
-| **Google Tag Manager** | Analytics integration with consent-aware tracking                    |
-| **Team Section**       | Data-driven team member display                                      |
-| **TeamMemberCard**     | Individual team member card with photo, role, bio                    |
+Every same-domain asset from the live WordPress capture that is actually used (images, the site
+logo) is served from this repository under `public/Images/homesforchange/`. **No Google Fonts CSS
+reference ships either** — fonts are self-hosted via `next/font/google` at build time, so there is
+no runtime request to `fonts.googleapis.com` for the app itself. Zero third-party asset hosts
+remain in the built output; the only external requests are the outbound PayPal donation link and
+standard outbound links to other organizations' own policy pages.
 
-### Policy Pages (7 Routes)
-
-| Route                               | Content                               |
-| ----------------------------------- | ------------------------------------- |
-| `/privacy-policy`                   | Privacy Policy                        |
-| `/cookie-policy`                    | Cookie Policy                         |
-| `/terms-of-service`                 | Terms of Service                      |
-| `/donation-policy`                  | Donation Policy                       |
-| `/free-for-charity-donation-policy` | Organization-specific Donation Policy |
-| `/vulnerability-disclosure-policy`  | Vulnerability Disclosure Policy       |
-| `/security-acknowledgements`        | Security Acknowledgements             |
-
-### SEO & Infrastructure
-
-- Dynamic sitemap generation (`src/app/sitemap.ts`)
-- Robots.txt configuration (`src/app/robots.ts`)
-- Global metadata with Open Graph and Twitter Cards (`src/lib/siteMetadata.ts`)
-- Static export for GitHub Pages deployment
-
-## Tech Stack
-
-| Layer     | Technology                                                         |
-| --------- | ------------------------------------------------------------------ |
-| Framework | Next.js 16 with App Router                                         |
-| Language  | TypeScript (strict mode)                                           |
-| Styling   | Tailwind CSS v4                                                    |
-| Export    | Static (`output: 'export'`)                                        |
-| Hosting   | GitHub Pages                                                       |
-| CI/CD     | GitHub Actions                                                     |
-| Testing   | Jest + Testing Library, Playwright (E2E), jest-axe (accessibility) |
-
-## Project Structure
-
-```
-src/
-  app/
-    page.tsx                              # Home page (renders team section)
-    layout.tsx                            # Root layout with global metadata
-    globals.css                           # Global styles
-    home-page/                            # Homepage wrapper
-    cookie-policy/page.tsx                # Cookie Policy
-    donation-policy/page.tsx              # Donation Policy
-    free-for-charity-donation-policy/     # FFC Donation Policy
-    privacy-policy/page.tsx               # Privacy Policy
-    security-acknowledgements/page.tsx    # Security Acknowledgements
-    terms-of-service/page.tsx             # Terms of Service
-    vulnerability-disclosure-policy/      # Vulnerability Disclosure Policy
-    sitemap.ts                            # Dynamic sitemap
-    robots.ts                             # Robots.txt config
-  components/
-    footer/                               # Site footer
-    header/                               # Site header/navigation
-    cookie-consent/                       # Cookie consent banner + preferences modal
-    google-tag-manager/                   # GTM integration
-    home-page/TheFreeForCharityTeam/      # Team section
-    ui/TeamMemberCard.tsx                 # Team member card component
-  data/
-    team.ts                               # Team member data loader
-    team/*.json                           # Individual team member JSON files
-  lib/
-    assetPath.ts                          # GitHub Pages asset path helper
-    fonts.ts                              # Font configuration
-    siteMetadata.ts                       # Site-wide metadata (SEO)
-public/                                   # Static assets (icons, images, fonts)
-```
-
-## How This Helps Charities
-
-Free For Charity (EIN: 46-2471893) provides free websites and domain management for 501(c)(3) nonprofits. This template serves charities that already have a website design but need:
-
-1. **Legal protection** -- Policy pages that cover privacy, cookies, terms of service, donations, and vulnerability disclosure, written for nonprofit organizations
-2. **Regulatory compliance** -- A cookie consent system that meets GDPR requirements with granular category controls (necessary, functional, analytics, marketing)
-3. **Professional credibility** -- A footer with GuideStar badge, contact information, social media presence, and proper copyright notices
-4. **Analytics capability** -- Google Tag Manager integration that respects user consent preferences before firing tracking tags
-5. **Zero hosting costs** -- Static export deploys to GitHub Pages for free, with custom domain support
-
-Charities can fork this template, replace the content with their own organization details, and immediately have a production-ready infrastructure layer for their website.
-
-## Development
-
-### Commands
-
-| Command             | Purpose                   |
-| ------------------- | ------------------------- |
-| `pnpm run dev`      | Start development server  |
-| `pnpm run format`   | Format code with Prettier |
-| `pnpm run lint`     | Run ESLint                |
-| `pnpm test`         | Run Jest unit tests       |
-| `pnpm run build`    | Production static build   |
-| `pnpm run test:e2e` | Run Playwright E2E tests  |
-
-### Pre-Commit Checklist
-
-```bash
-pnpm run format
-pnpm run lint
-pnpm test
-pnpm run build
-pnpm run test:e2e
-```
-
-### Testing
-
-- **Unit tests**: Jest + React Testing Library (126 tests across 12 suites)
-- **Accessibility**: jest-axe for WCAG compliance checks
-- **E2E tests**: Playwright for footer links, cookie consent, copyright, social links, GTM, and policy pages
-- **CI**: All tests run automatically on every PR via GitHub Actions
-
-See [TESTING.md](./TESTING.md) for the full testing guide.
+**Analytics**: no GTM container is wired up yet — GA4/GTM provisioning is a separate, explicitly
+gated step (see `src/components/google-tag-manager/index.tsx`). Shipping Free For Charity's own
+template-default container here would have sent this site's traffic into FFC's own analytics
+property.
 
 ## Deployment
 
-- **Live Site**: [https://ffcworkingsite1.org](https://ffcworkingsite1.org)
-- **GitHub Pages**: Automated via GitHub Actions on push to `main`
-- **Static export**: `output: 'export'` in `next.config.ts`
+Deployed to the **default GitHub Pages URL**
+(https://freeforcharity.github.io/FFC-EX-homesforchange.org/) — no custom domain, no DNS changes.
+Cutover (adding `public/CNAME`) is a separately gated step per the migration runbook.
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+- `CI - Build and Test` validates formatting, lint, unit tests, the static build, and Playwright
+  E2E tests on every PR/push.
+- `Deploy to GitHub Pages` runs after CI succeeds on `main`.
+- `Lighthouse CI` and `FFC Drift Check` audit the deployed structure and FFC best-practice
+  conventions respectively.
 
-## Using This as a Template
+## Development
 
-1. Click **"Use this template"** on GitHub
-2. Follow the [Template Usage Guide](./TEMPLATE_USAGE.md) for setup
-3. See the [Template Setup Checklist](./TEMPLATE_SETUP_CHECKLIST.md) for a quick reference
+```bash
+pnpm install
+pnpm run dev        # http://localhost:3000
+```
 
-### Key Customization Points
+| Command                | Purpose                                   |
+| ---------------------- | ----------------------------------------- |
+| `pnpm run format`      | Format with Prettier                      |
+| `pnpm run lint`        | ESLint                                    |
+| `pnpm test`            | Jest unit tests                           |
+| `pnpm run build`       | Static export (`out/`)                    |
+| `pnpm run test:e2e`    | Playwright E2E tests                      |
+| `pnpm run check:drift` | FFC footer-only best-practice conventions |
 
-- **Organization info, contact details, SEO identity**: Edit `src/lib/site.config.ts` — the single source of truth (name, EIN, phone, addresses, GuideStar links, social links, contact email). The footer and site metadata read from it. See [TEMPLATE_CUSTOMIZATION.md](./TEMPLATE_CUSTOMIZATION.md) for the full map.
-- **Footer quick links**: Edit the labels/anchors inline in `src/components/footer/index.tsx` to match your site's sections (keep the `Supported Charity Login` entry)
-- **Team members**: Edit JSON files in `src/data/team/`
-- **Policy content**: Update policy page content in `src/app/*/page.tsx`
-- **Analytics**: Set your GTM ID in `src/components/google-tag-manager/index.tsx`
-- **Branding**: Replace logos in `public/` and update color scheme in `globals.css`
-- **Verify completeness**: Run `pnpm run check:rebrand` for a checklist of FFC template defaults you still need to replace (the permanent "Supported by Free For Charity" attribution is excluded — it stays)
-
-## Documentation
-
-### Getting Started
-
-- [QUICK_START.md](./QUICK_START.md) -- 5-minute setup guide
-- [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) -- Complete template setup instructions
-- [TEMPLATE_CUSTOMIZATION.md](./TEMPLATE_CUSTOMIZATION.md) -- What to edit (site.config.ts), what stays, and how `check:rebrand` verifies completeness
-- [TEMPLATE_SETUP_CHECKLIST.md](./TEMPLATE_SETUP_CHECKLIST.md) -- Printable setup checklist
-
-### Development & Testing
-
-- [TESTING.md](./TESTING.md) -- Testing guide (Jest + Playwright)
-- [CODE_QUALITY.md](./CODE_QUALITY.md) -- Code quality standards
-- [NAMING_CONVENTIONS.md](./NAMING_CONVENTIONS.md) -- kebab-case for SEO
-
-### Deployment & Operations
-
-- [DEPLOYMENT.md](./DEPLOYMENT.md) -- GitHub Pages deployment guide
-- [LIGHTHOUSE.md](./LIGHTHOUSE.md) -- Performance monitoring
-- [SECURITY.md](./SECURITY.md) -- Security policies and practices
-- [DEPENDABOT.md](./DEPENDABOT.md) -- Automated dependency management
-
-### Project Governance
-
-- [LICENSE](./LICENSE) -- Apache 2.0
-- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) -- Contributor Covenant 2.1
-- [GOVERNANCE.md](./GOVERNANCE.md) -- Decision-making processes
-- [CONTRIBUTING.md](./CONTRIBUTING.md) -- How to contribute
-- [MAINTAINERS.md](./MAINTAINERS.md) -- Repository maintainers
-- [SECURITY.md](./SECURITY.md) -- Vulnerability reporting
-- [SUPPORT.md](./SUPPORT.md) -- Getting help
-
-## Contact
-
-**Primary Contact**: Clarke Moyer ([@clarkemoyer](https://github.com/clarkemoyer)) -- clarkemoyer@freeforcharity.org
-
-**Organization**: [Free For Charity](https://freeforcharity.org) -- a 501(c)(3) nonprofit (EIN: 46-2471893)
+Run them in that order before committing (`TEMPLATE_CUSTOMIZATION.md` and the other
+`TEMPLATE_*`/`*.md` docs in this repo are inherited from the upstream
+[FFC Footer-Only Template](https://github.com/FreeForCharity/FFC-IN-Footer_Only_Template) and
+describe the template's general customization surface, not this migration specifically).

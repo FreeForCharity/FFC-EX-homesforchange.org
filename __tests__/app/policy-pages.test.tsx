@@ -35,8 +35,18 @@ describe('Policy page metadata', () => {
     expect((meta.description as string).length).toBeGreaterThan(0)
   })
 
-  it.each(pages)('$name title should contain Free For Charity', ({ meta }) => {
-    expect(meta.title).toContain('Free For Charity')
+  // Donation Policy is the charity's OWN policy page and carries this site's
+  // name (siteConfig.name), not "Free For Charity" — every other policy page
+  // documents Free For Charity's own policy and keeps that name by design.
+  it.each(pages.filter((page) => page.name !== 'Donation Policy'))(
+    '$name title should contain Free For Charity',
+    ({ meta }) => {
+      expect(meta.title).toContain('Free For Charity')
+    }
+  )
+
+  it('Donation Policy title should contain the site name', () => {
+    expect(donationMeta.title).toContain('Homes for Change')
   })
 })
 
@@ -52,23 +62,39 @@ describe('Policy page rendering', () => {
     }
   )
 
-  it('Donation Policy renders heading and EIN', () => {
+  it('Donation Policy renders heading and does not fabricate a validated 501(c)(3) determination', () => {
     render(<DonationPolicyPage />)
     expect(screen.getByText('Donation Policy')).toBeInTheDocument()
-    expect(screen.getByText(/46-2471893/)).toBeInTheDocument()
+    // No validated EIN/501(c)(3) determination exists in FFC's own records
+    // for this charity yet — the page must never fabricate one (see
+    // src/lib/site.config.ts).
+    expect(screen.queryByText(/46-2471893/)).not.toBeInTheDocument()
   })
 
   it('Donation Policy contains expected sections', () => {
     render(<DonationPolicyPage />)
     expect(screen.getByText('Tax Deductibility')).toBeInTheDocument()
     expect(screen.getByText('Use of Donations')).toBeInTheDocument()
-    expect(screen.getByText('Refund Policy')).toBeInTheDocument()
+    expect(screen.getByText('Donation Processing')).toBeInTheDocument()
+  })
+
+  it('Donation Policy links to the real PayPal donation destination', () => {
+    render(<DonationPolicyPage />)
+    const paypalLink = screen.getByRole('link', { name: /PayPal/ })
+    expect(paypalLink).toHaveAttribute(
+      'href',
+      'https://www.paypal.com/donate/?hosted_button_id=EDGPK4WY95N5E'
+    )
   })
 
   it('Donation Policy has a contact email link', () => {
     render(<DonationPolicyPage />)
-    const emailLink = screen.getByText('clarkemoyer@freeforcharity.org')
-    expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:clarkemoyer@freeforcharity.org')
+    // The address appears twice (Tax Deductibility hedge + Contact Us).
+    const emailLinks = screen.getAllByText('info@homesforchange.org')
+    expect(emailLinks.length).toBeGreaterThan(0)
+    for (const emailLink of emailLinks) {
+      expect(emailLink.closest('a')).toHaveAttribute('href', 'mailto:info@homesforchange.org')
+    }
   })
 
   it('Security Acknowledgements renders heading', () => {
