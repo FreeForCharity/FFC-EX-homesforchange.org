@@ -2,36 +2,40 @@
 
 import React, { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { FiMenu } from 'react-icons/fi'
 import { LiaSearchSolid } from 'react-icons/lia'
 import { RxCross2 } from 'react-icons/rx'
 import { motion, AnimatePresence } from 'framer-motion'
+import { assetPath } from '@/lib/assetPath'
+import { siteConfig } from '@/lib/site.config'
 
 interface MenuItem {
   label: string
   path: string
 }
 
-const SCROLL_OFFSET = 100
-
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState<string>('')
+  const pathname = usePathname()
 
+  // Real multi-page navigation, mirroring the source site's own top nav
+  // order and labels (Home, About, Donate, Volunteer, Image Gallery, Blog,
+  // Contact). "FAQ's", "Events" and "Sponsors" are not carried forward — see
+  // the migration tracking issue for why (unedited/placeholder content).
   const menuItems: MenuItem[] = useMemo(
     () => [
-      { label: 'Home', path: '/#hero' },
-      { label: 'Team', path: '/#team' },
+      { label: 'Home', path: '/' },
+      { label: 'About', path: '/about' },
+      { label: 'Donate', path: '/donate' },
+      { label: 'Volunteer', path: '/volunteer' },
+      { label: 'Image Gallery', path: '/image-gallery' },
+      { label: 'Blog', path: '/blog' },
+      { label: 'Contact', path: '/contact' },
     ],
     []
-  )
-
-  const sections = useMemo(
-    () =>
-      menuItems.map((item) => item.path.replace('/#', '')).filter((section) => section !== 'hero'),
-    [menuItems]
   )
 
   useEffect(() => {
@@ -40,42 +44,21 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Track active section based on scroll position
-  useEffect(() => {
-    const handleScrollSpy = () => {
-      const scrollPosition = window.scrollY + SCROLL_OFFSET
-
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const offsetTop = element.offsetTop
-          const offsetBottom = offsetTop + element.offsetHeight
-          if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
-            setActiveSection(sectionId)
-            return
-          }
-        }
-      }
-      // If at the top, set home as active
-      if (window.scrollY < SCROLL_OFFSET) {
-        setActiveSection('')
-      }
-    }
-
-    window.addEventListener('scroll', handleScrollSpy)
-    return () => window.removeEventListener('scroll', handleScrollSpy)
-  }, [sections])
-
   const handleSearchToggle = () => setIsSearchOpen(!isSearchOpen)
   const handleLinkClick = () => {
     setIsMobileMenuOpen(false)
   }
 
-  const isActive = (path: string) => {
-    const sectionId = path.replace('/#', '')
-    if (sectionId === 'hero') return activeSection === ''
-    return activeSection === sectionId
-  }
+  // next.config.ts sets `trailingSlash: true`, so the deployed static export
+  // serves (and usePathname() reports) paths like `/about/`, while the nav
+  // items above are written without a trailing slash. Strip a single
+  // trailing slash from both sides before comparing (but never strip the
+  // root path itself) so the active link still highlights post-deploy —
+  // caught by Copilot review on PR #16, not by the Jest unit tests, since
+  // those mock usePathname() with values that already match exactly.
+  const normalizePathname = (value: string) =>
+    value.length > 1 ? value.replace(/\/+$/, '') : value
+  const isActive = (path: string) => normalizePathname(pathname) === normalizePathname(path)
 
   return (
     <header
@@ -93,9 +76,9 @@ const Header: React.FC = () => {
             >
               <Link href="/" onClick={handleLinkClick} className="block">
                 <img
-                  src="https://freeforcharity.org/wp-content/uploads/2024/04/Screenshot_145.png"
-                  alt="Free For Charity"
-                  className={`transition-all duration-300 ${isScrolled ? 'h-7' : 'h-11'}`}
+                  src={assetPath('/Images/homesforchange/logo.jpg')}
+                  alt={siteConfig.name}
+                  className={`transition-all duration-300 ${isScrolled ? 'h-9' : 'h-14'} w-auto`}
                 />
               </Link>
             </div>

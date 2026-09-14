@@ -3,6 +3,12 @@ import nextConfig from '../../next.config'
 import sitemap, { routes } from '../../src/app/sitemap'
 import { canonicalPath, siteUrl, trailingSlash } from '../../src/lib/site.config'
 import { siteMetadata } from '../../src/lib/siteMetadata'
+import { metadata as aboutMetadata } from '../../src/app/about/page'
+import { metadata as donateMetadata } from '../../src/app/donate/page'
+import { metadata as volunteerMetadata } from '../../src/app/volunteer/page'
+import { metadata as imageGalleryMetadata } from '../../src/app/image-gallery/page'
+import { metadata as blogMetadata } from '../../src/app/blog/page'
+import { metadata as contactMetadata } from '../../src/app/contact/page'
 import { metadata as cookiePolicyMetadata } from '../../src/app/cookie-policy/page'
 import { metadata as donationPolicyMetadata } from '../../src/app/donation-policy/page'
 import { metadata as ffcDonationPolicyMetadata } from '../../src/app/free-for-charity-donation-policy/page'
@@ -14,6 +20,12 @@ import { metadata as vulnerabilityDisclosureMetadata } from '../../src/app/vulne
 /** Metadata that owns the canonical tag for each sitemap route. */
 const metadataByRoute: Record<string, Metadata> = {
   '/': siteMetadata,
+  '/about': aboutMetadata,
+  '/donate': donateMetadata,
+  '/volunteer': volunteerMetadata,
+  '/image-gallery': imageGalleryMetadata,
+  '/blog': blogMetadata,
+  '/contact': contactMetadata,
   '/privacy-policy': privacyPolicyMetadata,
   '/cookie-policy': cookiePolicyMetadata,
   '/terms-of-service': termsOfServiceMetadata,
@@ -50,20 +62,18 @@ describe('sitemap.xml generation', () => {
     delete process.env.NEXT_PUBLIC_BASE_PATH
     const result = sitemap()
     for (const entry of result) {
-      expect(entry.url).toContain('ffcworkingsite1.org')
+      expect(entry.url).toContain('freeforcharity.github.io')
     }
   })
 
   it('should include GitHub Pages base path in route URLs when configured', () => {
-    process.env.NEXT_PUBLIC_BASE_PATH = '/FFC-IN-Footer_Only_Template'
+    process.env.NEXT_PUBLIC_BASE_PATH = '/FFC-EX-homesforchange.org'
 
     const result = sitemap()
 
+    expect(result.find((entry) => entry.url.endsWith('/FFC-EX-homesforchange.org/'))).toBeDefined()
     expect(
-      result.find((entry) => entry.url.endsWith('/FFC-IN-Footer_Only_Template/'))
-    ).toBeDefined()
-    expect(
-      result.find((entry) => entry.url.includes('/FFC-IN-Footer_Only_Template/privacy-policy'))
+      result.find((entry) => entry.url.includes('/FFC-EX-homesforchange.org/privacy-policy'))
     ).toBeDefined()
   })
 
@@ -111,7 +121,7 @@ describe('sitemap URL shape matches the trailingSlash config', () => {
       expect(entry.url.endsWith('/')).toBe(canonicalPath(routes[index].path).endsWith('/'))
       // Belt and braces: siteUrl() is what we are asserting about, so also
       // check the raw string against the configured origin + served path.
-      expect(entry.url).toBe(`https://ffcworkingsite1.org${canonicalPath(routes[index].path)}`)
+      expect(entry.url).toBe(`https://freeforcharity.github.io${canonicalPath(routes[index].path)}`)
     })
   })
 
@@ -120,19 +130,19 @@ describe('sitemap URL shape matches the trailingSlash config', () => {
 
     const [root] = sitemap()
 
-    expect(root.url).toBe('https://ffcworkingsite1.org/')
+    expect(root.url).toBe('https://freeforcharity.github.io/')
     expect(root.url.endsWith('//')).toBe(false)
   })
 
   it('applies the same shape under the GitHub Pages base path', () => {
-    process.env.NEXT_PUBLIC_BASE_PATH = '/FFC-IN-Footer_Only_Template'
+    process.env.NEXT_PUBLIC_BASE_PATH = '/FFC-EX-homesforchange.org'
 
     const result = sitemap()
     const urls = result.map((entry) => entry.url)
 
-    expect(urls[0]).toBe('https://ffcworkingsite1.org/FFC-IN-Footer_Only_Template/')
+    expect(urls[0]).toBe('https://freeforcharity.github.io/FFC-EX-homesforchange.org/')
     expect(urls).toContain(
-      'https://ffcworkingsite1.org/FFC-IN-Footer_Only_Template/privacy-policy/'
+      'https://freeforcharity.github.io/FFC-EX-homesforchange.org/privacy-policy/'
     )
     for (const url of urls) {
       expect(url.endsWith('/')).toBe(trailingSlash)

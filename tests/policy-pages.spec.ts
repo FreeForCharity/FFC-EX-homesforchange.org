@@ -27,14 +27,14 @@ const footerPolicyLinks = [
   // The charity's own donation policy. Matched with exact names below so this
   // does not also match "Free For Charity Donation Policy".
   { name: 'Donation Policy', href: '/donation-policy/' },
-  { name: 'Free For Charity Privacy Policy', href: '/privacy-policy/' },
-  { name: 'Free For Charity Cookie Policy', href: '/cookie-policy/' },
-  { name: 'Free For Charity Terms of Service', href: '/terms-of-service/' },
+  { name: 'Homes for Change Privacy Policy', href: '/privacy-policy/' },
+  { name: 'Homes for Change Cookie Policy', href: '/cookie-policy/' },
+  { name: 'Homes for Change Terms of Service', href: '/terms-of-service/' },
   {
-    name: 'Free For Charity Vulnerability Disclosure Policy',
+    name: 'Homes for Change Vulnerability Disclosure Policy',
     href: '/vulnerability-disclosure-policy/',
   },
-  { name: 'Free For Charity Security Acknowledgement', href: '/security-acknowledgements/' },
+  { name: 'Homes for Change Security Acknowledgement', href: '/security-acknowledgements/' },
 ]
 
 test.describe('Policy pages', () => {
