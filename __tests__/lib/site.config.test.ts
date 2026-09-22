@@ -22,7 +22,7 @@ describe('siteConfig contract', () => {
     expect(siteConfig).toMatchObject({
       name: 'Homes for Change',
       tagline: 'Building Homes, Restoring Lives',
-      url: 'https://freeforcharity.github.io',
+      url: 'https://homesforchange.org',
       twitterHandle: '',
       themeColor: '#ffffff',
       vulnerabilityDisclosurePath: '/vulnerability-disclosure-policy',
@@ -70,10 +70,10 @@ describe('siteConfig contract', () => {
     // canonicalPath() owns the trailingSlash policy; siteUrl() applies both.
     expect(canonicalPath('/')).toBe('/')
     expect(canonicalPath('/privacy-policy')).toBe('/privacy-policy/')
-    expect(siteUrl('/')).toBe('https://freeforcharity.github.io/')
-    expect(siteUrl('/privacy-policy')).toBe('https://freeforcharity.github.io/privacy-policy/')
+    expect(siteUrl('/')).toBe('https://homesforchange.org/')
+    expect(siteUrl('/privacy-policy')).toBe('https://homesforchange.org/privacy-policy/')
     // Files are served verbatim and must not gain a slash.
-    expect(siteUrl('/sitemap.xml')).toBe('https://freeforcharity.github.io/sitemap.xml')
+    expect(siteUrl('/sitemap.xml')).toBe('https://homesforchange.org/sitemap.xml')
     expect(() => siteUrl('privacy-policy')).toThrow(TypeError)
     expect(() => siteUrl('//example.com')).toThrow(TypeError)
     expect(() => canonicalPath('//example.com')).toThrow(TypeError)
@@ -84,12 +84,12 @@ describe('siteConfig contract', () => {
 
     expect(sitePath('/')).toBe('/FFC-EX-homesforchange.org/')
     expect(sitePath('/privacy-policy')).toBe('/FFC-EX-homesforchange.org/privacy-policy')
-    expect(siteUrl('/')).toBe('https://freeforcharity.github.io/FFC-EX-homesforchange.org/')
+    expect(siteUrl('/')).toBe('https://homesforchange.org/FFC-EX-homesforchange.org/')
     expect(siteUrl('/privacy-policy')).toBe(
-      'https://freeforcharity.github.io/FFC-EX-homesforchange.org/privacy-policy/'
+      'https://homesforchange.org/FFC-EX-homesforchange.org/privacy-policy/'
     )
     expect(siteUrl('/sitemap.xml')).toBe(
-      'https://freeforcharity.github.io/FFC-EX-homesforchange.org/sitemap.xml'
+      'https://homesforchange.org/FFC-EX-homesforchange.org/sitemap.xml'
     )
   })
 
