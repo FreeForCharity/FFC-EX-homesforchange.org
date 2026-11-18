@@ -121,16 +121,14 @@ export const siteConfig: SiteConfig = {
   // custom domain. There is no public/CNAME yet (this migration targets the
   // default Pages URL only; cutover is a separate, later step), and
   // deploy.yml sets NEXT_PUBLIC_BASE_PATH to /FFC-EX-homesforchange.org for
-  // exactly that case. sitePath()/siteUrl() append that basePath on top of
-  // whatever origin is configured here, so this MUST stay the GitHub Pages
-  // origin — pointing it at homesforchange.org would produce a real, live,
-  // non-resolving hybrid URL (https://homesforchange.org/FFC-EX-homesforchange.org/...)
-  // in the sitemap/robots/security.txt/canonical tags, since the custom
-  // domain does not also serve this repo's basePath (see
-  // FFC-EX-myservicehours.org's migration PR for the bug this avoids).
-  // Switch this to 'https://homesforchange.org' in the same PR that adds
-  // public/CNAME at cutover (when NEXT_PUBLIC_BASE_PATH also becomes empty).
-  url: 'https://freeforcharity.github.io',
+  // Custom-domain cutover staged: public/CNAME now carries
+  // homesforchange.org and NEXT_PUBLIC_BASE_PATH becomes empty at build
+  // time (see deploy.yml), so this moves with it in the same PR — per the
+  // comment this replaces, doing otherwise produces a live, non-resolving
+  // hybrid URL. This PR is held open (not merged) — see the CNAME file's
+  // own commit message — so this value ships live only once a human merges
+  // the staged cutover.
+  url: 'https://homesforchange.org',
   // No X/Twitter account was found on the live source site — leave unset
   // rather than guess.
   twitterHandle: '',

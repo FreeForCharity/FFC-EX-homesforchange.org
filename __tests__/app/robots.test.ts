@@ -36,7 +36,7 @@ describe('robots.txt generation', () => {
   it('should use the correct base URL', () => {
     delete process.env.NEXT_PUBLIC_BASE_PATH
     const result = robots()
-    expect(result.sitemap).toContain('freeforcharity.github.io')
+    expect(result.sitemap).toContain('homesforchange.org')
   })
 
   it('should include GitHub Pages base path in sitemap URL when configured', () => {
@@ -44,8 +44,6 @@ describe('robots.txt generation', () => {
 
     const result = robots()
 
-    expect(result.sitemap).toBe(
-      'https://freeforcharity.github.io/FFC-EX-homesforchange.org/sitemap.xml'
-    )
+    expect(result.sitemap).toBe('https://homesforchange.org/FFC-EX-homesforchange.org/sitemap.xml')
   })
 })
